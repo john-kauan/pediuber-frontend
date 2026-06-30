@@ -1,0 +1,144 @@
+<main class="app-shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">PU</div>
+      <div>
+        <strong>PediUber</strong>
+        <small>Operações</small>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a routerLink="/" class="active">Início</a>
+      <a routerLink="/passenger/request">Passageiro</a>
+      <a routerLink="/drivers">Motoristas</a>
+      <a routerLink="/history">Histórico</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="online-dot"></span>
+      Sistema online
+    </div>
+  </aside>
+
+  <section class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Painel PediUber</h1>
+        <p>Gerencie solicitações, motoristas e corridas em tempo real.</p>
+      </div>
+
+      <a routerLink="/passenger/request" class="new-ride-button">
+        Nova corrida
+      </a>
+    </header>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <span class="label">Status</span>
+        <strong>Operacional</strong>
+        <small>Backend e interface ativos</small>
+      </div>
+
+      <div class="summary-card">
+        <span class="label">Atendimento</span>
+        <strong>PediUber</strong>
+        <small>Motoristas locais disponíveis</small>
+      </div>
+
+      <div class="summary-card highlight">
+        <span class="label">Integração</span>
+        <strong>RideFleet Core</strong>
+        <small>Delegação quando necessário</small>
+      </div>
+    </section>
+
+    <section class="main-grid">
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Ações rápidas</h2>
+            <p>Escolha uma operação para iniciar.</p>
+          </div>
+        </div>
+
+        <div class="action-list">
+          <a routerLink="/passenger/request" class="action-row">
+            <div class="action-icon red">01</div>
+            <div>
+              <strong>Solicitar corrida</strong>
+              <small>Registrar origem, destino e passageiro</small>
+            </div>
+            <span>→</span>
+          </a>
+
+          <a routerLink="/drivers" class="action-row">
+            <div class="action-icon dark">02</div>
+            <div>
+              <strong>Área do motorista</strong>
+              <small>Consultar disponibilidade e corrida atual</small>
+            </div>
+            <span>→</span>
+          </a>
+
+          <a routerLink="/history" class="action-row">
+            <div class="action-icon dark">03</div>
+            <div>
+              <strong>Histórico de corridas</strong>
+              <small>Visualizar registros e status das corridas</small>
+            </div>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="panel ride-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Operação atual</h2>
+            <p>Exemplo de acompanhamento da corrida.</p>
+          </div>
+
+          <span class="status-badge">CONFIRMED</span>
+        </div>
+
+        <div class="route-box">
+          <div class="route-item">
+            <span class="point start"></span>
+            <div>
+              <small>Origem</small>
+              <strong>Avenida Principal, 100</strong>
+            </div>
+          </div>
+
+          <div class="route-line"></div>
+
+          <div class="route-item">
+            <span class="point end"></span>
+            <div>
+              <small>Destino</small>
+              <strong>UFV Campus Rio Paranaíba</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="driver-box">
+          <div class="car-icon">🚗</div>
+
+          <div>
+            <small>Motorista responsável</small>
+            <strong>PediUber Driver</strong>
+          </div>
+
+          <span class="eta">3 min</span>
+        </div>
+      </div>
+
+    </section>
+
+  </section>
+
+</main>
