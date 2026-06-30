@@ -1,0 +1,321 @@
+<main class="page">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="logo">PU</div>
+
+        <div>
+          <strong>PediUber</strong>
+          <small>Passageiro</small>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a routerLink="/">Início</a>
+        <a routerLink="/passenger/request" class="active">Nova corrida</a>
+        <a routerLink="/drivers">Motoristas</a>
+        <a routerLink="/history">Histórico</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <span></span>
+      Sistema online
+    </div>
+  </aside>
+
+  <section class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Solicitar corrida</h1>
+        <p>Informe passageiro, origem, destino e coordenadas da corrida.</p>
+      </div>
+
+      <a routerLink="/" class="back-button">Voltar</a>
+    </header>
+
+    <section class="request-grid">
+
+      <form class="form-panel" (ngSubmit)="requestRide()">
+
+        <section class="form-section">
+          <div class="section-header">
+            <div>
+              <h2>Passageiro</h2>
+              <p>Identificação de quem está solicitando a corrida.</p>
+            </div>
+          </div>
+
+          <label>
+            Nome do passageiro
+            <input
+              type="text"
+              name="passengerName"
+              [(ngModel)]="passengerName"
+              placeholder="Ex: John"
+            />
+          </label>
+        </section>
+
+        <section class="form-section">
+          <div class="section-header">
+            <div>
+              <h2>Origem</h2>
+              <p>Local de partida e coordenadas geográficas.</p>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <label class="wide">
+              Rua / Local de origem
+              <input
+                type="text"
+                name="originStreet"
+                [(ngModel)]="originStreet"
+                placeholder="Ex: Rua João Leandro"
+              />
+            </label>
+
+            <label>
+              Número
+              <input
+                type="text"
+                name="originNumber"
+                [(ngModel)]="originNumber"
+                placeholder="Ex: 120"
+              />
+            </label>
+
+            <label>
+              Cidade
+              <input
+                type="text"
+                name="originCity"
+                [(ngModel)]="originCity"
+              />
+            </label>
+
+            <label>
+              Estado
+              <input
+                type="text"
+                name="originState"
+                [(ngModel)]="originState"
+              />
+            </label>
+
+            <label>
+              Latitude da origem
+              <input
+                type="number"
+                step="any"
+                name="originLat"
+                [(ngModel)]="originLat"
+                placeholder="Ex: -19.191"
+              />
+            </label>
+
+            <label>
+              Longitude da origem
+              <input
+                type="number"
+                step="any"
+                name="originLng"
+                [(ngModel)]="originLng"
+                placeholder="Ex: -46.245"
+              />
+            </label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="section-header">
+            <div>
+              <h2>Destino</h2>
+              <p>Local de chegada e coordenadas geográficas.</p>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <label class="wide">
+              Rua / Local de destino
+              <input
+                type="text"
+                name="destinationStreet"
+                [(ngModel)]="destinationStreet"
+                placeholder="Ex: UFV Campus Rio Paranaíba"
+              />
+            </label>
+
+            <label>
+              Número
+              <input
+                type="text"
+                name="destinationNumber"
+                [(ngModel)]="destinationNumber"
+                placeholder="Ex: S/N"
+              />
+            </label>
+
+            <label>
+              Cidade
+              <input
+                type="text"
+                name="destinationCity"
+                [(ngModel)]="destinationCity"
+              />
+            </label>
+
+            <label>
+              Estado
+              <input
+                type="text"
+                name="destinationState"
+                [(ngModel)]="destinationState"
+              />
+            </label>
+
+            <label>
+              Latitude do destino
+              <input
+                type="number"
+                step="any"
+                name="destinationLat"
+                [(ngModel)]="destinationLat"
+                placeholder="Ex: -19.204"
+              />
+            </label>
+
+            <label>
+              Longitude do destino
+              <input
+                type="number"
+                step="any"
+                name="destinationLng"
+                [(ngModel)]="destinationLng"
+                placeholder="Ex: -46.236"
+              />
+            </label>
+          </div>
+        </section>
+
+        <div *ngIf="errorMessage" class="alert error">
+          {{ errorMessage }}
+        </div>
+
+        <div *ngIf="successResponse" class="alert success">
+          <strong>{{ successResponse.message }}</strong>
+          <span>Status: {{ successResponse.status }}</span>
+          <span>ID local: {{ successResponse.localRideId }}</span>
+
+          <a
+            *ngIf="trackingLink"
+            [routerLink]="trackingLink"
+            class="tracking-link"
+          >
+            Acompanhar corrida
+          </a>
+        </div>
+
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Solicitando...' : 'Solicitar corrida' }}
+        </button>
+
+      </form>
+
+      <aside class="preview-panel">
+        <div class="operation-card">
+
+          <div class="operation-header">
+            <div>
+              <h2>Operação atual</h2>
+              <p>Resumo da corrida antes do envio.</p>
+            </div>
+
+            <span class="status-badge">
+              {{ successResponse ? successResponse.status : 'REQUEST' }}
+            </span>
+          </div>
+
+          <div class="passenger-box">
+            <div class="avatar">👤</div>
+
+            <div>
+              <small>Passageiro</small>
+              <strong>{{ passengerName || 'Não informado' }}</strong>
+            </div>
+          </div>
+
+          <div class="route-box">
+
+            <div class="route-item">
+              <span class="point start"></span>
+
+              <div>
+                <small>Origem</small>
+                <strong>
+                  {{ originStreet || 'Origem não informada' }},
+                  {{ originNumber || 'S/N' }}
+                </strong>
+                <p>{{ originCity }} / {{ originState }}</p>
+              </div>
+            </div>
+
+            <div class="route-line"></div>
+
+            <div class="route-item">
+              <span class="point end"></span>
+
+              <div>
+                <small>Destino</small>
+                <strong>
+                  {{ destinationStreet || 'Destino não informado' }},
+                  {{ destinationNumber || 'S/N' }}
+                </strong>
+                <p>{{ destinationCity }} / {{ destinationState }}</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="coords-card">
+            <div>
+              <small>Coordenadas da origem</small>
+              <strong>
+                {{ originLat !== null && originLng !== null ? originLat + ', ' + originLng : 'Pendentes' }}
+              </strong>
+            </div>
+
+            <div>
+              <small>Coordenadas do destino</small>
+              <strong>
+                {{ destinationLat !== null && destinationLng !== null ? destinationLat + ', ' + destinationLng : 'Pendentes' }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="driver-box">
+            <div class="car-icon">🚗</div>
+
+            <div>
+              <small>Responsável</small>
+              <strong>{{ successResponse ? 'PediUber' : 'Aguardando solicitação' }}</strong>
+            </div>
+
+            <span class="eta">{{ successResponse ? 'OK' : '--' }}</span>
+          </div>
+
+        </div>
+      </aside>
+
+    </section>
+
+  </section>
+
+</main>
