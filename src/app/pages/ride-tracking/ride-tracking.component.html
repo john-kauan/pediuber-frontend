@@ -1,0 +1,167 @@
+<main class="page">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="logo">PU</div>
+
+        <div>
+          <strong>PediUber</strong>
+          <small>Acompanhamento</small>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a routerLink="/">Início</a>
+        <a routerLink="/passenger/request">Nova corrida</a>
+        <a routerLink="/drivers">Motoristas</a>
+        <a routerLink="/history">Histórico</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <span></span>
+      Atualizando em tempo real
+    </div>
+  </aside>
+
+  <section class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Acompanhar corrida</h1>
+        <p>Visualize o status, motorista, rota e progresso da corrida.</p>
+      </div>
+
+      <a routerLink="/passenger/request" class="back-button">Nova corrida</a>
+    </header>
+
+    <div *ngIf="loading && !tracking" class="loading-card">
+      Carregando acompanhamento da corrida...
+    </div>
+
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage }}
+    </div>
+
+    <section class="tracking-grid" *ngIf="tracking">
+
+      <div class="operation-card">
+
+        <div class="operation-header">
+          <div>
+            <h2>Operação atual</h2>
+            <p>Corrida #{{ tracking.localRideId }}</p>
+          </div>
+
+          <span class="status-badge">
+            {{ tracking.localStatus }}
+          </span>
+        </div>
+
+        <div class="status-title">
+          <span>{{ tracking.displayStatus }}</span>
+          <strong>{{ tracking.progressPercent }}%</strong>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width]="progressWidth"></div>
+        </div>
+
+        <div class="route-box">
+
+          <div class="route-item">
+            <span class="point start"></span>
+
+            <div>
+              <small>Origem</small>
+              <strong>{{ tracking.origin }}</strong>
+            </div>
+          </div>
+
+          <div class="route-line"></div>
+
+          <div class="route-item">
+            <span class="point end"></span>
+
+            <div>
+              <small>Destino</small>
+              <strong>{{ tracking.destination }}</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="driver-box">
+          <div class="car-icon">🚗</div>
+
+          <div>
+            <small>Motorista</small>
+            <strong>{{ tracking.driverName || 'Aguardando motorista' }}</strong>
+            <p>{{ tracking.vehicle || 'Veículo não informado' }}</p>
+          </div>
+
+          <span class="eta">
+            {{ tracking.etaSeconds !== null ? (tracking.etaSeconds + ' s') : '--' }}
+          </span>
+        </div>
+
+      </div>
+
+      <aside class="details-panel">
+
+        <div class="detail-card">
+          <small>Serviço responsável</small>
+          <strong>{{ tracking.assignedServiceId }}</strong>
+        </div>
+
+        <div class="detail-card">
+          <small>Delegada ao Core?</small>
+          <strong>{{ tracking.delegated ? 'Sim' : 'Não' }}</strong>
+        </div>
+
+        <div class="detail-card">
+          <small>UUID no Core</small>
+          <strong>{{ tracking.coreRideUuid || 'Corrida local' }}</strong>
+        </div>
+
+        <div class="detail-card">
+          <small>ID do motorista</small>
+          <strong>{{ tracking.driverId || 'Não atribuído' }}</strong>
+        </div>
+
+        <div class="action-panel">
+          <h3>Ações da corrida</h3>
+
+          <button
+            type="button"
+            class="start-button"
+            *ngIf="tracking.canStart"
+            [disabled]="actionLoading"
+            (click)="startRide()"
+          >
+            {{ actionLoading ? 'Processando...' : 'Iniciar corrida' }}
+          </button>
+
+          <button
+            type="button"
+            class="complete-button"
+            *ngIf="tracking.canComplete"
+            [disabled]="actionLoading"
+            (click)="completeRide()"
+          >
+            {{ actionLoading ? 'Processando...' : 'Finalizar corrida' }}
+          </button>
+
+          <div *ngIf="!tracking.canStart && !tracking.canComplete" class="no-action">
+            Nenhuma ação disponível para o status atual.
+          </div>
+        </div>
+
+      </aside>
+
+    </section>
+
+  </section>
+
+</main>
