@@ -1,0 +1,144 @@
+<main class="page">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="logo">PU</div>
+
+        <div>
+          <strong>PediUber</strong>
+          <small>Histórico</small>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a routerLink="/">Início</a>
+        <a routerLink="/passenger/request">Nova corrida</a>
+        <a routerLink="/drivers">Motoristas</a>
+        <a routerLink="/history" class="active">Histórico</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <span></span>
+      Sistema online
+    </div>
+  </aside>
+
+  <section class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Histórico de corridas</h1>
+        <p>Consulte as corridas registradas no PediUber.</p>
+      </div>
+
+      <button
+        type="button"
+        class="reload-button"
+        (click)="loadHistory()"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Atualizando...' : 'Atualizar' }}
+      </button>
+    </header>
+
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="loading" class="loading-card">
+      Carregando histórico de corridas...
+    </div>
+
+    <div *ngIf="!loading && rides.length === 0" class="empty-card">
+      Nenhuma corrida registrada até o momento.
+    </div>
+
+    <section class="history-grid" *ngIf="!loading && rides.length > 0">
+
+      <article class="ride-card" *ngFor="let ride of rides">
+
+        <div class="ride-header">
+          <div>
+            <small>Corrida</small>
+            <h2>#{{ ride.id }}</h2>
+          </div>
+
+          <span
+            class="status-badge"
+            [class]="getStatusClass(ride.status)"
+          >
+            {{ getStatusLabel(ride.status) }}
+          </span>
+        </div>
+
+        <div class="route-box">
+
+          <div class="route-item">
+            <span class="point start"></span>
+
+            <div>
+              <small>Origem</small>
+              <strong>{{ ride.origin }}</strong>
+            </div>
+          </div>
+
+          <div class="route-line"></div>
+
+          <div class="route-item">
+            <span class="point end"></span>
+
+            <div>
+              <small>Destino</small>
+              <strong>{{ ride.destination }}</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-box">
+            <small>Motorista</small>
+            <strong>{{ ride.driverName || 'Não informado' }}</strong>
+          </div>
+
+          <div class="info-box">
+            <small>Veículo</small>
+            <strong>{{ ride.vehicle || 'Não informado' }}</strong>
+          </div>
+
+          <div class="info-box">
+            <small>Serviço responsável</small>
+            <strong>{{ ride.assignedServiceId }}</strong>
+          </div>
+
+          <div class="info-box">
+            <small>Delegada?</small>
+            <strong>{{ ride.delegated ? 'Sim' : 'Não' }}</strong>
+          </div>
+
+        </div>
+
+        <div class="ride-footer">
+          <div>
+            <small>Data de criação</small>
+            <strong>{{ ride.createdAt || 'Não informada' }}</strong>
+          </div>
+
+          <a
+            [routerLink]="'/rides/' + ride.id + '/tracking'"
+            class="tracking-link"
+          >
+            Acompanhar
+          </a>
+        </div>
+
+      </article>
+
+    </section>
+
+  </section>
+
+</main>
