@@ -18,7 +18,7 @@ Frontend PediUber:
 
 RideFleet Core:
 
-    INSERIR_AQUI_O_LINK_DO_REPOSITORIO_DO_CORE_DO_PROFESSOR
+    https://github.com/Matt1211/ridefleet-core-sin142
 
 ---
 
