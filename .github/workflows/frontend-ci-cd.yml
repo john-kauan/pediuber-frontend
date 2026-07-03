@@ -1,0 +1,103 @@
+name: Frontend CI/CD - PediUber
+
+'on':
+  push:
+    branches:
+      - main
+      - dockeriza-frontend
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Angular
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build do Angular
+        run: npm run build
+
+  docker-build:
+    name: Build e validacao Docker
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Build da imagem Docker
+        run: docker build -t pediuber-frontend:ci .
+
+      - name: Criar rede de teste
+        run: docker network create pediuber-ci-net
+
+      - name: Criar backend fake para o Nginx resolver o nome
+        run: |
+          docker run -d \
+            --name pediuber-load-balancer \
+            --network pediuber-ci-net \
+            nginx:1.27-alpine
+
+      - name: Subir container do frontend
+        run: |
+          docker run -d \
+            --name pediuber-frontend-ci \
+            --network pediuber-ci-net \
+            -p 4200:80 \
+            pediuber-frontend:ci
+
+      - name: Aguardar inicializacao
+        run: sleep 10
+
+      - name: Ver containers
+        run: docker ps
+
+      - name: Testar frontend
+        run: curl -f http://localhost:4200
+
+      - name: Mostrar logs do frontend em caso de erro
+        if: failure()
+        run: docker logs pediuber-frontend-ci
+
+      - name: Derrubar containers
+        if: always()
+        run: |
+          docker rm -f pediuber-frontend-ci || true
+          docker rm -f pediuber-load-balancer || true
+          docker network rm pediuber-ci-net || true
+
+  deploy:
+    name: Deploy automatizado do frontend
+    runs-on: ubuntu-latest
+    needs: docker-build
+
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Deploy automatico simulado
+        run: |
+          echo "Deploy automatico do frontend iniciado"
+          echo "Build Angular passou"
+          echo "Imagem Docker validada"
+          echo "Em ambiente real, este job publicaria a imagem ou atualizaria o servidor"
+          echo "Deploy do frontend finalizado com sucesso"
